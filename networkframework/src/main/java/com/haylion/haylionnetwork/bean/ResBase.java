@@ -38,8 +38,6 @@ public class ResBase<T> extends LitePalSupport implements Serializable {
     }
 
 
-
-
     @Override
     public String toString() {
         return "ResBase{" +
@@ -47,6 +45,7 @@ public class ResBase<T> extends LitePalSupport implements Serializable {
                 ", code=" + code +
                 ", totalCount=" + totalCount +
                 ", ts=" + ts +
+                ", data=" + data +
                 '}';
     }
 }
