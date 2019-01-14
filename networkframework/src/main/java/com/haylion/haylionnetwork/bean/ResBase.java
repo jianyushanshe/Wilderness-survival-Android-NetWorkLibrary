@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Time:2018/11/15 15:24
  * Description:ResBase
  */
-public class ResBase implements Serializable {
+public class ResBase<T> implements Serializable {
     /**
      * 接口所有msg 改成message  系统级错误 0x02 0x04 重新登录
      */
@@ -18,7 +18,6 @@ public class ResBase implements Serializable {
     /**
      * 返回的结果code 200成功
      */
-    @SerializedName(value = "resultcode", alternate = "code")
     public int code;
 
     /**
@@ -31,11 +30,13 @@ public class ResBase implements Serializable {
     @SerializedName("ts")
     public long ts;
 
-    /**
-     * json字符串
-     */
-    @SerializedName("data")
-    public String jsonStr;
+//    /**
+//     * json字符串
+//     */
+//    @SerializedName("data")
+//    public String jsonStr;
+
+    public T data;
 
     @Override
     public String toString() {
@@ -44,7 +45,7 @@ public class ResBase implements Serializable {
                 ", code=" + code +
                 ", totalCount=" + totalCount +
                 ", ts=" + ts +
-                ", jsonStr='" + jsonStr + '\'' +
+                ", data='" + data + '\'' +
                 '}';
     }
 }
