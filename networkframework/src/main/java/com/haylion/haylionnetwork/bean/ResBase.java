@@ -2,6 +2,8 @@ package com.haylion.haylionnetwork.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.io.Serializable;
 
 /**
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * Time:2018/11/15 15:24
  * Description:ResBase
  */
-public class ResBase<T> implements Serializable {
+public class ResBase<T> extends LitePalSupport implements Serializable {
     /**
      * 接口所有msg 改成message  系统级错误 0x02 0x04 重新登录
      */
