@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Time:2018/11/15 15:24
  * Description:ResBase
  */
-public class ResBase<T> extends LitePalSupport implements Serializable {
+public class ResBase extends LitePalSupport implements Serializable {
     /**
      * 接口所有msg 改成message  系统级错误 0x02 0x04 重新登录
      */
@@ -32,13 +32,13 @@ public class ResBase<T> extends LitePalSupport implements Serializable {
     @SerializedName("ts")
     public long ts;
 
-//    /**
-//     * json字符串
-//     */
-//    @SerializedName("data")
-//    public String jsonStr;
+    /**
+     * json字符串
+     */
+    @SerializedName("data")
+    public String jsonStr;
 
-    public T data;
+
 
     @Override
     public String toString() {
@@ -47,7 +47,7 @@ public class ResBase<T> extends LitePalSupport implements Serializable {
                 ", code=" + code +
                 ", totalCount=" + totalCount +
                 ", ts=" + ts +
-                ", data='" + data + '\'' +
+                ", data='" + jsonStr + '\'' +
                 '}';
     }
 }
