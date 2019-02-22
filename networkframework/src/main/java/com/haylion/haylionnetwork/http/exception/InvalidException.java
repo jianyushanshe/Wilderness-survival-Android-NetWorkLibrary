@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class InvalidException extends BaseException {
 
-    public static final String FLAG_ERROR_RELOGIN = "2000";
+    public static final String FLAG_ERROR_RELOGIN = "406";
     public static final String FLAG_ERROR_RESPONCE_CHECK = "2001";
 
     public static Map<String, String> exComMaps = new HashMap<>();
