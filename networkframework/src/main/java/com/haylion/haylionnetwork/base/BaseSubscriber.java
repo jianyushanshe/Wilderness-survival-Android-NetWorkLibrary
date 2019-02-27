@@ -59,7 +59,12 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<T> {
             if (e instanceof UserException) {//用户需要处理的异常
                 UserException userException = (UserException) e;
                 ex = new CommonException(userException);
-                onUserError(ex);
+                if (UserException.FLAG_ERROR_RELOGIN.equals(ex.getCode())) {
+                    //重新登录
+                    showDialog(context, ex.getMsg());
+                } else {
+                    onUserError(ex);
+                }
             } else if (e instanceof InvalidException) {//权限异常处理
                 InvalidException invalidException = (InvalidException) e;
                 if (InvalidException.FLAG_ERROR_RESPONCE_CHECK.equals(invalidException.getCode())) {
