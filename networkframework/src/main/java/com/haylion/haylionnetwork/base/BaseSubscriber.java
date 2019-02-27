@@ -42,7 +42,12 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<T> {
         if (t instanceof ResBase) {
             ResBase resBase = (ResBase) t;
             if (resBase.code != 200) {//失败
-                this.onUserError(new CommonException(new UserException(resBase.code + "", resBase.msg, resBase)));
+                if (resBase.code == 406) {
+                    //重新登录
+                    showDialog(context, resBase.msg);
+                } else {
+                    this.onUserError(new CommonException(new UserException(resBase.code + "", resBase.msg, resBase)));
+                }
             } else {
                 this.onUserSuccess(t);
             }
@@ -59,12 +64,7 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<T> {
             if (e instanceof UserException) {//用户需要处理的异常
                 UserException userException = (UserException) e;
                 ex = new CommonException(userException);
-                if (UserException.FLAG_ERROR_RELOGIN.equals(ex.getCode())) {
-                    //重新登录
-                    showDialog(context, ex.getMsg());
-                } else {
-                    onUserError(ex);
-                }
+                onUserError(ex);
             } else if (e instanceof InvalidException) {//权限异常处理
                 InvalidException invalidException = (InvalidException) e;
                 if (InvalidException.FLAG_ERROR_RESPONCE_CHECK.equals(invalidException.getCode())) {
