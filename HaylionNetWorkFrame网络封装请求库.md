@@ -4,7 +4,19 @@
 
 **1.集成步骤**
 
-生成jar包，放入工程lib文件夹，并gradle中添加引用
+下载aar包，放入工程的libs中，在gradle中添加引用
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    ...
+    implementation(name: 'HaylionNetWorkFrame', ext: 'aar')
+}
 
 
 **2.使用方法**
