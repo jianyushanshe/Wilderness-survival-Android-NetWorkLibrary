@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class ResBase<T> extends LitePalSupport implements Serializable {
     /**
-     * 接口所有msg 改成message  系统级错误 0x02 0x04 重新登录
+     * 消息
      */
     @SerializedName(value = "message", alternate = "resultmsg")
     public String msg;
