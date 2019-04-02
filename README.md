@@ -1,29 +1,25 @@
-
+﻿
 版本号	修改人	时间	备注
 1.0.0	王建明	2018-11-12	
 
 **1.集成步骤**
 
-1.1：在工程的buidlgradle中添加
+下载aar包，放入工程的libs中，在gradle中添加引用
 
 ```
-allprojects {
-    repositories {
-       ……
-       maven { url 'https://jitpack.io' }
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }
-```
 
-1.2：在app的buildgradle中添加
-
-```
 dependencies {
-……
-    implementation 'com.github.maascharge:HaylionNetFrame:1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    ...
+    implementation(name: 'HaylionNetWorkFrame', ext: 'aar')
 }
-```
 
+```
 
 **2.使用方法**
 
@@ -136,3 +132,4 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
     }
 }
 ```
+
