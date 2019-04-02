@@ -4,25 +4,7 @@
 
 **1.集成步骤**
 
-1.1：在工程的buidlgradle中添加
-
-```
-allprojects {
-    repositories {
-       ……
-       maven { url 'https://jitpack.io' }
-    }
-}
-```
-
-1.2：在app的buildgradle中添加
-
-```
-dependencies {
-……
-    implementation 'com.github.jianyushanshe:HaylionNewWorkFrame:1.1'
-}
-```
+生成jar包，放入工程lib文件夹，并gradle中添加引用
 
 
 **2.使用方法**
