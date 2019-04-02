@@ -6,6 +6,7 @@
 
 下载aar包，放入工程的libs中，在gradle中添加引用
 
+```
 repositories {
     flatDir {
         dirs 'libs'
@@ -18,6 +19,7 @@ dependencies {
     implementation(name: 'HaylionNetWorkFrame', ext: 'aar')
 }
 
+```
 
 **2.使用方法**
 
