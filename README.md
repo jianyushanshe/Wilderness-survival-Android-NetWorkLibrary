@@ -16,7 +16,7 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     ...
-    implementation(name: 'HaylionNetWorkFrame', ext: 'aar')
+    implementation(name: ' HaylionNetworkLib-release', ext: 'aar')
 }
 
 ```
