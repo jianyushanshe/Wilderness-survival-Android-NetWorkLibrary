@@ -7,17 +7,16 @@
 下载aar包，放入工程的libs中，在gradle中添加引用
 
 ```
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
-
+llprojects {
+		repositories {
+			...
+			maven { url 'https://www.jitpack.io' }
+		}
+	}
+	
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    ...
-    implementation(name: ' HaylionNetworkLib-release', ext: 'aar')
-}
+	        implementation 'com.github.jianyushanshe:NetWorkFrameWork_JYSS:1.0'
+	}
 
 ```
 
