@@ -1,15 +1,14 @@
 package com.haylion.haylionnetwork.http.api;
 
+import android.accounts.NetworkErrorException;
 import android.app.Application;
 import android.text.TextUtils;
 
-import com.ecar.util.TagUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haylion.haylionnetwork.db.SettingPreferences;
 import com.haylion.haylionnetwork.http.converter.ConverterFactory;
 import com.haylion.haylionnetwork.http.util.HttpsUtils;
-import com.haylion.haylionnetwork.util.major.Major;
 import com.haylion.haylionnetwork.util.time.TimeCalibrationInterceptor;
 
 import java.io.File;
@@ -38,25 +37,40 @@ public class ApiBox {
     private int WRITE_TIME_OUT = 10 * 1000;   //数据写入超时时间
     private static final String CACHE_NAME = "cache";   //缓存目录名称
     /**
+     * 异常
+     */
+    public static String FLAG_UNKNOWN = "1001";
+    /**
+     * 网络异常标志
+     */
+    public static String FLAG_NET_ERROR = "1002";
+    /**
+     * 网络异常标志
+     */
+    public static String FLAG_NET_TIME_OUT = "10021";
+    /**
+     * 解析异常
+     */
+    public static String FLAG_PARSE_ERROR = "1003";
+    /**
+     * 权限异常
+     */
+    public static String FLAG_PERMISSION_ERROR = "1004";
+    /**
+     * token过期，重新登录
+     */
+    public static String FLAG_TOKEN_EXPIRED = "406";
+    /**
+     * successCode
+     */
+    public static String FLAG_SUCCESS_CODE = "200";
+    /**
      * Log 日志开关 发布版本设为false
      */
     private boolean DEBUG = false;
-    private boolean VeriNgis = true;
 
     public boolean isDEBUG() {
         return DEBUG;
-    }
-
-    public void setDEBUG(boolean DEBUG) {
-        this.DEBUG = DEBUG;
-    }
-
-    public boolean isVeriNgis() {
-        return VeriNgis;
-    }
-
-    public void setVeriNgis(boolean veriNgis) {
-        VeriNgis = veriNgis;
     }
 
     /**
@@ -122,12 +136,9 @@ public class ApiBox {
     private ApiBox(Builder builder) {
         //1.设置应用上下文、debug参数
         DEBUG = builder.debug;
-        VeriNgis = builder.veriNgis;
         this.application = builder.application;
         this.cacheFile = builder.cacheDir;
         this.inputStreams = builder.inputStreams;
-        SettingPreferences sp = SettingPreferences.getDefault(application);
-        sp.setReqkey(builder.reqKey);
         this.serviceMap = new HashMap<>();
         if (builder.connetTimeOut > 0) {
             this.CONNECT_TIME_OUT = builder.connetTimeOut;
@@ -135,9 +146,26 @@ public class ApiBox {
         if (builder.readTimeOut > 0) {
             this.READ_TIME_OUT = builder.readTimeOut;
         }
-
         if (builder.writeTimeOut > 0) {
             this.WRITE_TIME_OUT = builder.writeTimeOut;
+        }
+        if (builder.successCode > 0) {
+            FLAG_SUCCESS_CODE = String.valueOf(builder.successCode);
+        }
+        if (builder.tokenExpiredCode > 0) {
+            FLAG_TOKEN_EXPIRED = String.valueOf(builder.tokenExpiredCode);
+        }
+        if (builder.jsonParseExceptionCode > 0) {
+            FLAG_PARSE_ERROR = String.valueOf(builder.jsonParseExceptionCode);
+        }
+        if (builder.netTimeOutExceptionCode > 0) {
+            FLAG_NET_TIME_OUT = String.valueOf(builder.netTimeOutExceptionCode);
+        }
+        if (builder.permissionExceptionCode > 0) {
+            FLAG_PERMISSION_ERROR = String.valueOf(builder.permissionExceptionCode);
+        }
+        if (builder.unknownExceptionCode > 0) {
+            FLAG_UNKNOWN = String.valueOf(builder.unknownExceptionCode);
         }
         //2.gson
         gson = getReponseGson();
@@ -210,13 +238,34 @@ public class ApiBox {
         private Application application;//应用上下文，需要注入参数
         private File cacheDir;//缓存路径
         private boolean debug;
-        private String appId;
-        private String reqKey;
         private int connetTimeOut;
         private int readTimeOut;
         private int writeTimeOut;
-        private boolean veriNgis = true;
         private InputStream[] inputStreams;
+        /**
+         * token过期代码，需要重新标识
+         */
+        private int tokenExpiredCode;
+        /**
+         * josn解析异常标识
+         */
+        private int jsonParseExceptionCode;
+        /**
+         * 网络连接超时异常标识
+         */
+        private int netTimeOutExceptionCode;
+        /**
+         * 权限异常标识
+         */
+        private int permissionExceptionCode;
+        /**
+         * 未标记异常标识
+         */
+        private int unknownExceptionCode;
+        /**
+         * 访问成功标识
+         */
+        private int successCode;
 
         public Builder application(Application application) {
             this.application = application;
@@ -226,21 +275,6 @@ public class ApiBox {
 
         public Builder debug(boolean debug) {
             this.debug = debug;
-            return this;
-        }
-
-        public Builder veriNgis(boolean veriNgis) {
-            this.veriNgis = veriNgis;//设置绕过参数
-            return this;
-        }
-
-        public Builder reqKey(String reqKey) {
-            this.reqKey = reqKey;
-            return this;
-        }
-
-        public Builder appId(String appId) {
-            this.appId = appId;
             return this;
         }
 
@@ -264,6 +298,37 @@ public class ApiBox {
             return this;
         }
 
+        public Builder tokenExpiredCode(int tokenExpiredCode) {
+            this.tokenExpiredCode = tokenExpiredCode;
+            return this;
+        }
+
+        public Builder jsonParseExceptionCode(int jsonParseExceptionCode) {
+            this.jsonParseExceptionCode = jsonParseExceptionCode;
+            return this;
+        }
+
+        public Builder netTimeOutExceptionCode(int netTimeOutExceptionCode) {
+            this.netTimeOutExceptionCode = netTimeOutExceptionCode;
+            return this;
+        }
+
+        public Builder permissionExceptionCode(int permissionExceptionCode) {
+            this.permissionExceptionCode = permissionExceptionCode;
+            return this;
+        }
+
+        public Builder unknownExceptionCode(int unknownExceptionCode) {
+            this.unknownExceptionCode = unknownExceptionCode;
+            return this;
+        }
+
+        public Builder successCode(int successCode) {
+            this.successCode = successCode;
+            return this;
+        }
+
+
         public ApiBox build() {
             if (SingletonHolder.INSTANCE == null) {
                 ApiBox apiBox = new ApiBox(this);
@@ -271,15 +336,7 @@ public class ApiBox {
             } else {
                 SingletonHolder.INSTANCE.application = this.application;
                 SingletonHolder.INSTANCE.DEBUG = this.debug;
-                SingletonHolder.INSTANCE.VeriNgis = this.veriNgis;
-                SettingPreferences sp = SettingPreferences.getDefault(application);
-                sp.setReqkey(this.reqKey);
-                TagUtil.IS_SHOW_LOG = this.debug;
             }
-            SettingPreferences sp = SettingPreferences.getDefault(application);
-            sp.setReqkey(this.reqKey);
-            sp.setAppId(Major.eUtil.binstrToStr(TextUtils.isEmpty(appId) ? "" : appId));
-
             return SingletonHolder.INSTANCE;
         }
 

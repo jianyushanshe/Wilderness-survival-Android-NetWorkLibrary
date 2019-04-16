@@ -41,8 +41,8 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<T> {
     public void onNext(T t) {
         if (t instanceof ResBase) {
             ResBase resBase = (ResBase) t;
-            if (resBase.code != 200) {//失败
-                if (resBase.code == 406) {
+            if (resBase.code != Integer.parseInt(ApiBox.FLAG_SUCCESS_CODE)) {//失败
+                if (resBase.code == Integer.parseInt(ApiBox.FLAG_TOKEN_EXPIRED)) {
                     //重新登录
                     showDialog(context, resBase.msg);
                 } else {
@@ -76,23 +76,23 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<T> {
                 }
             } else if (e instanceof JsonParseException || e instanceof JSONException || e instanceof ParseException) {
                 //解析错误
-                ex = new CommonException(e, CommonException.FLAG_PARSE_ERROR);
+                ex = new CommonException(e, ApiBox.FLAG_PARSE_ERROR);
                 onUnifiedError(ex);
             } else if (e instanceof ConnectException || e instanceof SocketTimeoutException || e instanceof SocketException || e instanceof UnknownHostException) {
                 //网络错误
                 if (e instanceof SocketTimeoutException) {
-                    ex = new CommonException(e, CommonException.FLAG_NET_TIME_OUT);
+                    ex = new CommonException(e, ApiBox.FLAG_NET_TIME_OUT);
                 } else {
-                    ex = new CommonException(e, CommonException.FLAG_NET_ERROR);
+                    ex = new CommonException(e, ApiBox.FLAG_NET_ERROR);
                 }
                 onUnifiedError(ex);
             } else if (e instanceof SecurityException) {
                 //权限未许可
-                ex = new CommonException(e, CommonException.FLAG_PERMISSION_ERROR);
+                ex = new CommonException(e, ApiBox.FLAG_PERMISSION_ERROR);
                 onUnifiedError(ex);
             } else {
                 //未知错误
-                ex = new CommonException(e, CommonException.FLAG_UNKNOWN);
+                ex = new CommonException(e, ApiBox.FLAG_UNKNOWN);
                 onUnifiedError(ex);
             }
             resetContext();

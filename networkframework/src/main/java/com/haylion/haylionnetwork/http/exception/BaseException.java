@@ -1,6 +1,5 @@
 package com.haylion.haylionnetwork.http.exception;
 
-import android.text.TextUtils;
 
 import com.haylion.haylionnetwork.bean.ResBase;
 

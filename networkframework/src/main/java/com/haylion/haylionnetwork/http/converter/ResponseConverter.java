@@ -6,10 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.haylion.haylionnetwork.bean.ResBase;
-import com.haylion.haylionnetwork.db.SettingPreferences;
-import com.haylion.haylionnetwork.http.api.ApiBox;
 import com.haylion.haylionnetwork.http.exception.InvalidException;
-import com.haylion.haylionnetwork.http.util.InvalidUtil;
 import com.haylion.haylionnetwork.http.util.TagLibUtil;
 
 
