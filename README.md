@@ -14,7 +14,7 @@ llprojects {
 	}
 	
 dependencies {
-	     implementation 'com.github.jianyushanshe:Wilderness-survival-Android-NetWorkLibrary:5.0'
+	     implementation 'com.github.jianyushanshe:Wilderness-survival-Android-NetWorkLibrary:5.1'
 	}
 
 ```
