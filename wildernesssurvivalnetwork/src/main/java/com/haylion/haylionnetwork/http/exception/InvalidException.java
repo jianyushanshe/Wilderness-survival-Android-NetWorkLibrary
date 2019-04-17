@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 
 import com.haylion.haylionnetwork.bean.ResBase;
+import com.haylion.haylionnetwork.http.api.ApiBox;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,14 +20,10 @@ import java.util.Map;
  */
 public class InvalidException extends BaseException {
 
-    public static final String FLAG_ERROR_RELOGIN = "406";
-    public static final String FLAG_ERROR_RESPONCE_CHECK = "2001";
-
     public static Map<String, String> exComMaps = new HashMap<>();
 
     static {
-        exComMaps.put(FLAG_ERROR_RELOGIN, "登录过期，请重新登录");
-        exComMaps.put(FLAG_ERROR_RESPONCE_CHECK, "数据校验失败,请重新操作");
+        exComMaps.put(ApiBox.FLAG_TOKEN_EXPIRED, "登录过期，请重新登录");
     }
 
     public InvalidException(String code, String msg, ResBase resObj) {

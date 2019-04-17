@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.haylion.haylionnetwork.bean.ResBase;
+import com.haylion.haylionnetwork.http.api.ApiBox;
 import com.haylion.haylionnetwork.http.exception.InvalidException;
 import com.haylion.haylionnetwork.http.util.TagLibUtil;
 
@@ -68,7 +69,7 @@ public class ResponseConverter<T> implements Converter<ResponseBody, T> {
                         (!TextUtils.isEmpty(base.msg) && base.msg.contains("0x04") || !TextUtils.isEmpty(base.msg) && base.msg.contains("0x02"))) {
                     TagLibUtil.showLogDebug("系统级错误 message出现");
                     //重新登录
-                    throw new InvalidException(InvalidException.FLAG_ERROR_RELOGIN, base.msg, base);
+                    throw new InvalidException(ApiBox.FLAG_TOKEN_EXPIRED, base.msg, base);
                 }
             }
         } finally {

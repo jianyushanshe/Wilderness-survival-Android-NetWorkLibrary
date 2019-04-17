@@ -67,10 +67,7 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<T> {
                 onUserError(ex);
             } else if (e instanceof InvalidException) {//权限异常处理
                 InvalidException invalidException = (InvalidException) e;
-                if (InvalidException.FLAG_ERROR_RESPONCE_CHECK.equals(invalidException.getCode())) {
-                    //校验码错误
-                    onCheckNgisFailed(context, invalidException);
-                } else if (InvalidException.FLAG_ERROR_RELOGIN.equals(invalidException.getCode())) {
+                if (ApiBox.FLAG_TOKEN_EXPIRED.equals(invalidException.getCode())) {
                     //重新登录
                     showDialog(context, invalidException.getMsg());
                 }
