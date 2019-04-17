@@ -4,8 +4,7 @@
 
 **1.集成步骤**
 
-下载aar包，放入工程的libs中，在gradle中添加引用
-
+在gradle中添加引用
 ```
 llprojects {
 		repositories {
@@ -15,14 +14,32 @@ llprojects {
 	}
 	
 dependencies {
-	        implementation 'com.github.jianyushanshe:NetWorkFrameWork_JYSS:1.0'
+	     implementation 'com.github.jianyushanshe:Wilderness-survival-Android-NetWorkLibrary:4.0'
 	}
 
 ```
 
+
+
 **2.使用方法**
 
-2.1：network包中创建请求的interface类
+2.1在Application的onCreat方法中初始化
+
+```
+ //初始化ApiBox
+        ApiBox.Builder builder = new ApiBox.Builder();
+        builder.application(this)
+                .debug(BuildConfig.DEBUG)//是否是debug模式
+                .connetTimeOut(30000)//连接超时时间
+                .readTimeOut(30000)//读取超时时间
+                .jsonParseExceptionCode(1003)//json解析异常标识
+                .successCode(200)//访问成功标识
+                .tokenExpiredCode(406)//token过期，重新登录标识
+                .unknownExceptionCode(1000)//未知异常标识
+                .build();
+```
+
+2.2：network包中创建请求的interface类
 
 例如：
 
@@ -34,16 +51,13 @@ public interface AccountApi {
 }
 ```
 
-2.2：network包中创建一个类，实例化2.1中创建的interface。
+2.3：network包中创建一个类，实例化2.2中创建的interface。
 
 例如：
 
 ```
 public class AccountNetwork {
-    public final static String PARAMS_MODULE = "module";//
-    public final static String PARAMS_SERVICE = "service";//
-    public final static String PARAMS_METHOD = "method";//
-
+  
     public static AccountNetwork accountNetwork;
     private static AccountApi accountApi;
 
@@ -68,9 +82,6 @@ public class AccountNetwork {
     public Flowable<UserEntity> login(String userName, String userPassword) {
         // 添加参数到集合
         TreeMap<String, String> tMap = new TreeMap<>();
-        tMap.put(PARAMS_MODULE, "imeb");
-        tMap.put(PARAMS_SERVICE, "BaseInfo");
-        tMap.put(PARAMS_METHOD, "login");
         tMap.put("username", userName);
         tMap.put("pwd", userPassword);
         Flowable<UserEntity> observable = accountApi.login(tMap);
@@ -80,7 +91,7 @@ public class AccountNetwork {
 }
 ```
 
-2.3 repository包中创建一个类，进行数据请求和处理
+2.4 repository包中创建一个类，进行数据请求和处理
 
 例如：
 
@@ -103,6 +114,7 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
      BaseSubscriber<ResBase> subscriber = new BaseSubscriber<ResBase>(context, view) {
             @Override
             protected void onUserSuccess(ResBase resBase) {
+            //请求成功返回的数据
                 UserEntity userEntity = new UserEntity();
                 userEntity.state = 1;
                 userEntity.userName = "用户名";
@@ -113,11 +125,13 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
             @Override
             protected void onUserError(CommonException ex) {
                 super.onUserError(ex);
+                //请求错误，需要用户处理的异常
             }
 
             @Override
             protected void onUnifiedError(CommonException ex) {
                 super.onUnifiedError(ex);
+                //请求错误，系统级别异常
             }
         };
         //一个请求
