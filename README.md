@@ -1,6 +1,6 @@
 ﻿
 版本号	修改人	时间	备注
-1.0.0	王建明	2018-11-12	
+5.1	王建明	2019-4-17	
 
 **1.集成步骤**
 
@@ -14,7 +14,7 @@ llprojects {
 	}
 	
 dependencies {
-	     implementation 'com.github.jianyushanshe:Wilderness-survival-Android-NetWorkLibrary:5.1'
+	     implementation 'com.github.jianyushanshe:Wilderness-survival-Android-NetWorkLibrary:4.0'
 	}
 
 ```
@@ -144,5 +144,35 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
         rxManage.add(disposable);
     }
 }
+```
+
+2.5 在BaseActivity中，继承ILoading 接口，重写reLogin重新登录的方法、showLoading加载进度显示方法和dismissLoading隐藏进度显示方法
+
+```
+    /**
+     * 重新登录，网络库里面会调用
+     *
+     * @param context
+     * @param s
+     */
+    @Override
+    public void reLogin(Context context, String s) {
+        //重新登录需要做的操作
+    }
+
+```
+
+```
+  @Override
+    public void showLoading() {
+   //显示加载的进度
+    }
+```
+
+```
+  @Override
+    public void dismissLoading() {
+       //隐藏进度显示
+    }
 ```
 
