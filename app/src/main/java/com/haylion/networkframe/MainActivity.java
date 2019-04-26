@@ -1,19 +1,26 @@
 package com.haylion.networkframe;
 
 import android.content.Context;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.haylion.haylionnetwork.base.BaseSubscriber;
 import com.haylion.haylionnetwork.base.RxManage;
 import com.haylion.haylionnetwork.bean.ResBase;
+import com.haylion.haylionnetwork.http.broadcastreceiver.NetWorkBroadcastReceiver;
 import com.haylion.haylionnetwork.http.exception.CommonException;
+import com.haylion.haylionnetwork.http.util.NetWorkUtil;
 import com.haylion.haylionnetwork.interfaces.security.IInvalid;
 import com.haylion.haylionnetwork.interfaces.view.ILoading;
 import com.haylion.haylionnetwork.util.rx.RxUtils;
+import com.haylion.rxbuspublic.rxbuslib.RxBus;
+import com.haylion.rxbuspublic.rxbuslib.RxBusReact;
 
 
 import io.reactivex.disposables.Disposable;
@@ -23,11 +30,19 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
     private Button btGetInfo;
     private TextView tvInfo;
     private RxManage rxManage;
+    private NetWorkBroadcastReceiver netWorkBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (netWorkBroadcastReceiver == null) {
+            netWorkBroadcastReceiver = new NetWorkBroadcastReceiver();
+        }
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkBroadcastReceiver, intentFilter);
+        RxBus.getInstance().register(this, true);
         if (rxManage == null) {
             rxManage = new RxManage();
         }
@@ -108,12 +123,31 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
     protected void onDestroy() {
         super.onDestroy();
         rxManage.clear();//清空所有订阅
+        RxBus.getInstance().unregister(this);
+        unregisterReceiver(netWorkBroadcastReceiver);
     }
 
     @Override
     public void reLogin(Context context, String msg) {
         //重新登录
         tvInfo.setText("Token过期请重新登录");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (NetWorkUtil.isNetConnected(getApplicationContext())) {
+            tvInfo.setText("网络是否连接---是");
+        } else {
+            tvInfo.setText("网络是否连接---否");
+        }
+
+    }
+
+    @RxBusReact(clazz = Boolean.class, tag = NetWorkBroadcastReceiver.Tags.EXTRA_NET_WORK_ISCONNECTED)
+    @Override
+    public void showNetWorkState(boolean isConnect) {
+        tvInfo.setText("网络状态变化：网络是否连接---" + isConnect);
     }
 
     @Override
