@@ -6,6 +6,7 @@
 
 在gradle中添加引用
 
+```
 llprojects {
 		repositories {
 			...
@@ -17,10 +18,13 @@ dependencies {
 	     implementation 'com.github.jianyushanshe:Wilderness-survival-Android-NetWorkLibrary:5.1'
 	}
 
+```
+
 2.使用方法
 
 2.1在Application的onCreate方法中初始化
 
+```
  //初始化ApiBox
         ApiBox.Builder builder = new ApiBox.Builder();
         builder.application(this)
@@ -32,19 +36,26 @@ dependencies {
                 .tokenExpiredCode(406)//token过期，重新登录标识
                 .unknownExceptionCode(1000)//未知异常标识
                 .build();
+```
+
 2.2：network包中创建请求的interface类
 
 例如：
 
+```
 public interface AccountApi {
    //登录
     @GET(".")
     Flowable<UserEntity> login(@QueryMap TreeMap<String, String> map);
 }
+```
+
 2.3：network包中创建一个类，实例化2.2中创建的interface。
 
 例如：
 
+
+```
 public class AccountNetwork {
   
     public static AccountNetwork accountNetwork;
@@ -78,10 +89,14 @@ public class AccountNetwork {
     }
 
 }
+```
+
 2.4 repository包中创建一个类，进行数据请求和处理
 
 例如：
 
+
+```
 Public class LoginRepository extends BaseRepository<LoginContract.Presenter, LoginContract.View> implements LoginContract.Repository {
     /**
      * LoginRepository构造方法
@@ -130,9 +145,14 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
         rxManage.add(disposable);
     }
 }
+```
+
 2.5 在BaseActivity中，继承ILoading 接口，重写reLogin重新登录的方法、showLoading加载进度显示方法和dismissLoading隐藏进度显示方法
 
-    /**
+ 
+
+```
+   /**
      * 重新登录，网络库里面会调用
      *
      * @param context
@@ -151,6 +171,8 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
     public void dismissLoading() {
        //隐藏进度显示
     }
+
+```
 
 2.6在onDestory方法中清除所有订阅
 
