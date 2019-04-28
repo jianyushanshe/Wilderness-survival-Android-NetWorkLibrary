@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 
 import com.haylion.haylionnetwork.http.util.NetWorkUtil;
-import com.haylion.rxbuspublic.rxbuslib.RxBus;
+import com.haylion.haylionnetwork.interfaces.security.IInvalid;
 
 /**
  * Author:wangjianming
@@ -15,22 +15,28 @@ import com.haylion.rxbuspublic.rxbuslib.RxBus;
  * 监听网络状态
  */
 public class NetWorkBroadcastReceiver extends BroadcastReceiver {
+    private IInvalid iInvalid;
+
+    public NetWorkBroadcastReceiver(IInvalid iInvalid) {
+        this.iInvalid = iInvalid;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             if (!NetWorkUtil.isNetConnected(context)) {
                 //网络未连接
-                RxBus.getInstance().post(false, Tags.EXTRA_NET_WORK_ISCONNECTED);
+                if (iInvalid != null) {
+                    iInvalid.showNetWorkState(false);
+                }
             } else {
                 //网络连接
-                RxBus.getInstance().post(true, Tags.EXTRA_NET_WORK_ISCONNECTED);
+                if (iInvalid != null) {
+                    iInvalid.showNetWorkState(true);
+                }
             }
 
         }
-    }
-
-    public interface Tags {
-        String EXTRA_NET_WORK_ISCONNECTED = "extra_net_work_isconnected";
     }
 
 }

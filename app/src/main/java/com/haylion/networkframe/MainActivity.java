@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (netWorkBroadcastReceiver == null) {
-            netWorkBroadcastReceiver = new NetWorkBroadcastReceiver();
+            netWorkBroadcastReceiver = new NetWorkBroadcastReceiver(this);
         }
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
 
     }
 
-    @RxBusReact(clazz = Boolean.class, tag = NetWorkBroadcastReceiver.Tags.EXTRA_NET_WORK_ISCONNECTED)
+    //@RxBusReact(clazz = Boolean.class, tag = NetWorkBroadcastReceiver.Tags.EXTRA_NET_WORK_ISCONNECTED)
     @Override
     public void showNetWorkState(boolean isConnect) {
         tvInfo.setText("网络状态变化：网络是否连接---" + isConnect);
