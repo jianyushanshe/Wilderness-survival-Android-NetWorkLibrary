@@ -1,10 +1,11 @@
-﻿
-版本号	修改人	时间	备注
-5.1	王建明	2019-4-17	
+版本号	修改人	时间	备注 5.2	简雨山舍	2019-4-26
 
-**1.集成步骤**
+**功能一：网络请求**
+
+1.集成步骤
 
 在gradle中添加引用
+
 ```
 llprojects {
 		repositories {
@@ -19,11 +20,9 @@ dependencies {
 
 ```
 
+2.使用方法
 
-
-**2.使用方法**
-
-2.1在Application的onCreat方法中初始化
+2.1在Application的onCreate方法中初始化
 
 ```
  //初始化ApiBox
@@ -54,6 +53,7 @@ public interface AccountApi {
 2.3：network包中创建一个类，实例化2.2中创建的interface。
 
 例如：
+
 
 ```
 public class AccountNetwork {
@@ -94,6 +94,7 @@ public class AccountNetwork {
 2.4 repository包中创建一个类，进行数据请求和处理
 
 例如：
+
 
 ```
 Public class LoginRepository extends BaseRepository<LoginContract.Presenter, LoginContract.View> implements LoginContract.Repository {
@@ -148,8 +149,10 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
 
 2.5 在BaseActivity中，继承ILoading 接口，重写reLogin重新登录的方法、showLoading加载进度显示方法和dismissLoading隐藏进度显示方法
 
+ 
+
 ```
-    /**
+   /**
      * 重新登录，网络库里面会调用
      *
      * @param context
@@ -160,19 +163,57 @@ Public class LoginRepository extends BaseRepository<LoginContract.Presenter, Log
         //重新登录需要做的操作
     }
 
-```
-
-```
   @Override
     public void showLoading() {
    //显示加载的进度
     }
-```
-
-```
   @Override
     public void dismissLoading() {
        //隐藏进度显示
     }
+
 ```
 
+2.6在onDestory方法中清除所有订阅
+
+```
+rxManage.clear();//清空所有订阅
+```
+
+**功能二：网络状态监听**
+
+1.在BaseActivity的onCreate中注册网络状态监听广播和RxBus
+
+```
+	 if (netWorkBroadcastReceiver == null) {
+            netWorkBroadcastReceiver = new NetWorkBroadcastReceiver();
+        }
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkBroadcastReceiver, intentFilter);//注册广播
+        RxBus.getInstance().register(this, true);//注册RxBus
+```
+2.在BaseActivity的onResume中调用网络状态检测方法，检测当前网络状态，做相应的操作
+
+```
+if (NetWorkUtil.isNetConnected(getApplicationContext())) {
+           //网络连接
+        } else {
+           //网络未连接
+        }
+```
+3.重写showNetWorkState方法，并且监听RxBus对于网络状态的通知，做响应操作
+
+```
+ @RxBusReact(clazz = Boolean.class, tag = NetWorkBroadcastReceiver.Tags.EXTRA_NET_WORK_ISCONNECTED)
+    @Override
+    public void showNetWorkState(boolean isConnect) {
+        tvInfo.setText("网络状态变化：网络是否连接---" + isConnect);
+    }
+```
+4.在onDestory方法中，解除注册广播和RxBus
+
+```
+	RxBus.getInstance().unregister(this);
+      unregisterReceiver(netWorkBroadcastReceiver);
+```
