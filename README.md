@@ -1,4 +1,4 @@
-版本号	修改人	时间	备注 5.2	简雨山舍	2019-4-26
+版本号	修改人	时间	备注 5.4	简雨山舍	2019-4-28
 
 **功能一：网络请求**
 
@@ -182,16 +182,16 @@ rxManage.clear();//清空所有订阅
 
 **功能二：网络状态监听**
 
-1.在BaseActivity的onCreate中注册网络状态监听广播和RxBus
+1.在BaseActivity的onCreate中注册网络状态监听广播
 
 ```
 	 if (netWorkBroadcastReceiver == null) {
-            netWorkBroadcastReceiver = new NetWorkBroadcastReceiver();
+            netWorkBroadcastReceiver = new NetWorkBroadcastReceiver(this);
         }
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(netWorkBroadcastReceiver, intentFilter);//注册广播
-        RxBus.getInstance().register(this, true);//注册RxBus
+    
 ```
 2.在BaseActivity的onResume中调用网络状态检测方法，检测当前网络状态，做相应的操作
 
@@ -202,18 +202,16 @@ if (NetWorkUtil.isNetConnected(getApplicationContext())) {
            //网络未连接
         }
 ```
-3.重写showNetWorkState方法，并且监听RxBus对于网络状态的通知，做响应操作
+3.BaseActivity继承IInvalid接口，重写showNetWorkState方法，在showNetWorkState方法中根据isConnect判断网络是否连接。
 
 ```
- @RxBusReact(clazz = Boolean.class, tag = NetWorkBroadcastReceiver.Tags.EXTRA_NET_WORK_ISCONNECTED)
     @Override
     public void showNetWorkState(boolean isConnect) {
         tvInfo.setText("网络状态变化：网络是否连接---" + isConnect);
     }
 ```
-4.在onDestory方法中，解除注册广播和RxBus
+4.在onDestory方法中，解除注册广播
 
 ```
-	RxBus.getInstance().unregister(this);
       unregisterReceiver(netWorkBroadcastReceiver);
 ```
