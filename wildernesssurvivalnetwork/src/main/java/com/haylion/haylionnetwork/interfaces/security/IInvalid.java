@@ -2,9 +2,6 @@ package com.haylion.haylionnetwork.interfaces.security;
 
 import android.content.Context;
 
-import com.haylion.haylionnetwork.http.broadcastreceiver.NetWorkBroadcastReceiver;
-import com.haylion.haylionnetwork.http.util.NetWorkUtil;
-import com.haylion.rxbuspublic.rxbuslib.RxBusReact;
 
 /**
  * Author:wangjianming
