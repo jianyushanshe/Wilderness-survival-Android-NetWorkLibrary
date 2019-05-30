@@ -15,7 +15,7 @@ import io.reactivex.Flowable;
 public class MainNetWork {
     public static MainNetWork mainNetWork;
     private static MainApi mainApi;
-    private static final String baseUrl = "https://www.wanandroid.com/";
+    private static final String baseUrl = "http://intranet.haylion.cn:60005/api/";
 
     public static synchronized MainNetWork getInstance() {
         if (mainNetWork == null) {
@@ -33,6 +33,9 @@ public class MainNetWork {
         TreeMap<String, Object> treeMap = new TreeMap<>();
         treeMap.put("lng", lng);
         treeMap.put("lat", lat);
+        treeMap.put("destLng", destLng);
+        treeMap.put("destLat", destLat);
+        treeMap.put("type", type);
         flowable = mainApi.getInfo(treeMap);
         return flowable;
     }

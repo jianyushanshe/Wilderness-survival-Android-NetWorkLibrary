@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.haylion.haylionnetwork.base.BaseSubscriber;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
     private Button btGetInfo;
     private TextView tvInfo;
     private RxManage rxManage;
+    private ProgressBar pb;
     private NetWorkBroadcastReceiver netWorkBroadcastReceiver;
 
     @Override
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
             }
         });
         tvInfo = findViewById(R.id.tv_info);
+        pb = findViewById(R.id.pb);
 
     }
 
@@ -147,12 +150,12 @@ public class MainActivity extends AppCompatActivity implements IInvalid, ILoadin
     @Override
     public void showLoading() {
         //显示数据加载中
-        tvInfo.setText("数据加载中。。。");
+        pb.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void dismissLoading() {
-
+        pb.setVisibility(View.GONE);
     }
 
     @Override

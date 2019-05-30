@@ -16,7 +16,7 @@ import retrofit2.http.QueryMap;
  */
 public interface MainApi {
 
-    @GET("article/list/0/json")
+    @GET("app/station/around")
     Flowable<ResBase> getInfo(@QueryMap TreeMap<String, Object> treeMap);
 
     @GET("article/list/0/json")

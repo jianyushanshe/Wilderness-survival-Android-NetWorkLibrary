@@ -31,6 +31,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
  */
 public class ApiBox {
     private int CONNECT_TIME_OUT = 10 * 1000;//跟服务器连接超时时间
+    public static int DELAY_TIME_SHOW_LOADING = 3000;//延时展示loading时间
     private int READ_TIME_OUT = 10 * 1000;    // 数据读取超时时间
     private int WRITE_TIME_OUT = 10 * 1000;   //数据写入超时时间
     private static final String CACHE_NAME = "cache";   //缓存目录名称
@@ -141,6 +142,9 @@ public class ApiBox {
         if (builder.connetTimeOut > 0) {
             this.CONNECT_TIME_OUT = builder.connetTimeOut;
         }
+        if (builder.delayTimeShowLoading > 0) {
+            this.DELAY_TIME_SHOW_LOADING = builder.delayTimeShowLoading;
+        }
         if (builder.readTimeOut > 0) {
             this.READ_TIME_OUT = builder.readTimeOut;
         }
@@ -237,6 +241,7 @@ public class ApiBox {
         private File cacheDir;//缓存路径
         private boolean debug;
         private int connetTimeOut;
+        private int delayTimeShowLoading;
         private int readTimeOut;
         private int writeTimeOut;
         private InputStream[] inputStreams;
@@ -271,21 +276,56 @@ public class ApiBox {
             return this;
         }
 
+        /**
+         * 是否是debug模式
+         *
+         * @param debug
+         * @return
+         */
         public Builder debug(boolean debug) {
             this.debug = debug;
             return this;
         }
 
+        /**
+         * 连接超时时间
+         *
+         * @param connetTime
+         * @return
+         */
         public Builder connetTimeOut(int connetTime) {
             this.connetTimeOut = connetTime;
             return this;
         }
 
+        /**
+         * 设置延迟多久显示loading动画
+         *
+         * @param delayTimeShowLoading
+         * @return
+         */
+        public Builder delayTimeShowLoading(int delayTimeShowLoading) {
+            this.delayTimeShowLoading = delayTimeShowLoading;
+            return this;
+        }
+
+        /**
+         * 读取超时时间
+         *
+         * @param readTimeOut
+         * @return
+         */
         public Builder readTimeOut(int readTimeOut) {
             this.readTimeOut = readTimeOut;
             return this;
         }
 
+        /**
+         * 写入超时时间
+         *
+         * @param writeTimeOut
+         * @return
+         */
         public Builder writeTimeOut(int writeTimeOut) {
             this.writeTimeOut = writeTimeOut;
             return this;
@@ -296,31 +336,67 @@ public class ApiBox {
             return this;
         }
 
+        /**
+         * token错误码
+         *
+         * @param tokenExpiredCode
+         * @return
+         */
         public Builder tokenExpiredCode(int tokenExpiredCode) {
             this.tokenExpiredCode = tokenExpiredCode;
             return this;
         }
 
+        /**
+         * 解析gson异常码
+         *
+         * @param jsonParseExceptionCode
+         * @return
+         */
         public Builder jsonParseExceptionCode(int jsonParseExceptionCode) {
             this.jsonParseExceptionCode = jsonParseExceptionCode;
             return this;
         }
 
+        /**
+         * 网络请求超时码
+         *
+         * @param netTimeOutExceptionCode
+         * @return
+         */
         public Builder netTimeOutExceptionCode(int netTimeOutExceptionCode) {
             this.netTimeOutExceptionCode = netTimeOutExceptionCode;
             return this;
         }
 
+        /**
+         * 权限异常码
+         *
+         * @param permissionExceptionCode
+         * @return
+         */
         public Builder permissionExceptionCode(int permissionExceptionCode) {
             this.permissionExceptionCode = permissionExceptionCode;
             return this;
         }
 
+        /**
+         * 位置异常码
+         *
+         * @param unknownExceptionCode
+         * @return
+         */
         public Builder unknownExceptionCode(int unknownExceptionCode) {
             this.unknownExceptionCode = unknownExceptionCode;
             return this;
         }
 
+        /**
+         * 网络请求成功码
+         *
+         * @param successCode
+         * @return
+         */
         public Builder successCode(int successCode) {
             this.successCode = successCode;
             return this;
