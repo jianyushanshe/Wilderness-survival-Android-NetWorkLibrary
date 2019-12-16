@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haylion.haylionnetwork.http.converter.ConverterFactory;
 import com.haylion.haylionnetwork.http.util.HttpsUtils;
-import com.haylion.haylionnetwork.http.util.TagLibUtil;
 import com.haylion.haylionnetwork.util.time.TimeCalibrationInterceptor;
 
 import java.io.File;
@@ -193,12 +192,7 @@ public class ApiBox {
      * @return
      */
     private HttpLoggingInterceptor getLogInterceptor() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                TagLibUtil.showLogDebug(message);
-            }
-        });
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         if (DEBUG) {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         } else {
