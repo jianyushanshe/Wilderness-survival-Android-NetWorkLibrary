@@ -30,6 +30,7 @@ dependencies {
         builder.application(this)
                 .debug(BuildConfig.DEBUG)//是否是debug模式
                 .connetTimeOut(30000)//连接超时时间
+  		.delayTimeShowLoading(3000)//延时显示loading,加载超过该时间会显示loading，该时间内加载完成，则不显示loading
                 .readTimeOut(30000)//读取超时时间
                 .jsonParseExceptionCode(1003)//json解析异常标识
                 .successCode(200)//访问成功标识
