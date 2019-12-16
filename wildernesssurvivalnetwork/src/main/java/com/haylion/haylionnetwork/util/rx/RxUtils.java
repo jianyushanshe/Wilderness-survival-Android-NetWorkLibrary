@@ -32,8 +32,8 @@ public class RxUtils {
     /**
      * 获取线程调度器
      *
-     * @param isLoading            是否显示loading
-     * @param loading              显示loading的view
+     * @param isLoading 是否显示loading
+     * @param loading   显示loading的view
      * @return
      */
     public static <T> FlowableTransformer<T, T> getScheduler(boolean isLoading, final ILoading loading) {
@@ -96,19 +96,27 @@ public class RxUtils {
 
                                     @Override
                                     public void onNext(Long aLong) {
-                                        if (loading != null && isLoading) {
-                                            loading.showLoading();
+                                        if (loading != null) {
+                                            if (isLoading) {
+                                                loading.showLoading();
+                                            } else {
+                                                loading.dismissLoading();
+                                            }
                                         }
                                     }
 
                                     @Override
                                     public void onError(Throwable e) {
-
+                                        if (loading != null) {
+                                            loading.dismissLoading();
+                                        }
                                     }
 
                                     @Override
                                     public void onComplete() {
-
+                                        if (loading != null) {
+                                            loading.dismissLoading();
+                                        }
                                     }
                                 });
 
