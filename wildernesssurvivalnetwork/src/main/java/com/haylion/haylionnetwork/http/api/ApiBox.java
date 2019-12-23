@@ -1,7 +1,10 @@
 package com.haylion.haylionnetwork.http.api;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
+import android.webkit.WebSettings;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +13,7 @@ import com.haylion.haylionnetwork.http.util.HttpsUtils;
 import com.haylion.haylionnetwork.util.time.TimeCalibrationInterceptor;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +24,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -217,6 +223,7 @@ public class ApiBox {
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
                 .addInterceptor(getLogInterceptor())
                 .addInterceptor(getTimeIntercepter())
+                .addInterceptor(getUserAgentInrercept())
                 .connectTimeout(CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
                 .readTimeout(READ_TIME_OUT, TimeUnit.MILLISECONDS)
                 .writeTimeout(WRITE_TIME_OUT, TimeUnit.MILLISECONDS)
@@ -224,6 +231,54 @@ public class ApiBox {
                 .sslSocketFactory(sslSocketFactory)
                 .hostnameVerifier(hostnameVerifier);
         return okHttpClientBuilder.build();
+    }
+
+    /**
+     * 添加user-Agent
+     *
+     * @return
+     */
+    private Interceptor getUserAgentInrercept() {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request()
+                        .newBuilder()
+                        .removeHeader("User-Agent")//移除旧的
+                        .addHeader("User-Agent", getUserAgent(application))//添加真正的头部
+                        .build();
+                return chain.proceed(request);
+            }
+        };
+    }
+
+    /**
+     * 获取user-agent
+     *
+     * @param context
+     * @return
+     */
+    private static String getUserAgent(Context context) {
+        String userAgent = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            try {
+                userAgent = WebSettings.getDefaultUserAgent(context);
+            } catch (Exception e) {
+                userAgent = System.getProperty("http.agent");
+            }
+        } else {
+            userAgent = System.getProperty("http.agent");
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0, length = userAgent.length(); i < length; i++) {
+            char c = userAgent.charAt(i);
+            if (c <= '\u001f' || c >= '\u007f') {
+                sb.append(String.format("\\u%04x", (int) c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     /**

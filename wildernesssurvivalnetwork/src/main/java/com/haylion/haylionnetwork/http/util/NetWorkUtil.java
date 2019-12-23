@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.webkit.WebSettings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
